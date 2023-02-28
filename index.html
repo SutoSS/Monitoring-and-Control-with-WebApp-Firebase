@@ -1,0 +1,200 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Green Box Dashboard</title>
+
+    <!-- update the version number as needed -->
+    <script src="https://www.gstatic.com/firebasejs/8.8.1/firebase-app.js"></script>
+
+    <!-- include only the Firebase features as you need -->
+    <script src="https://www.gstatic.com/firebasejs/8.8.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.8.1/firebase-database.js"></script>
+
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://cdn.rawgit.com/Mikhus/canvas-gauges/gh-pages/download/2.1.7/all/gauge.min.js"></script>
+  
+
+    <script>
+     // REPLACE WITH YOUR web app's Firebase configuration
+     const firebaseConfig = 
+     {
+      apiKey: "AIzaSyCnLEHOYJ78Zem8D_VOhwqz9enZlBGJgjo",
+      authDomain: "tasmartpot.firebaseapp.com",
+      databaseURL: "https://tasmartpot-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "tasmartpot",
+      storageBucket: "tasmartpot.appspot.com",
+      messagingSenderId: "929945687861",
+      appId: "1:929945687861:web:7be1306704075b690c5e7c",
+      measurementId: "G-LPV1LNDGPF" 
+      };
+
+      // Initialize firebase
+      firebase.initializeApp(firebaseConfig);
+
+      // Make auth and database references
+      const auth = firebase.auth();
+      const db = firebase.database();
+
+    </script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+
+<body>
+  <!--TOP BAR-->
+  <div class="topnav">
+    <b>
+      <img src="favicon.png" alt="Trulli" width="40" height="55">
+    </b>
+    <h style="font-size:50px"> Green Box Dashboard <i class="fas fa-clipboard-list"></i></h1>
+  </div>
+
+  <!--AUTHENTICATION BAR (USER DETAILS/LOGOUT BUTTON)-->
+  <div id="authentication-bar" style="display: none;">
+    <p><span id="authentication-status">User Logged</span>
+       <span id="user-details">USEREMAIL</span>
+       <!-- <a href="/" id="logout-link">(logout)</a> -->
+       <button type="submit" id="logout-link">logout</button>
+    </p>
+  </div>
+
+  <!--LOGIN FORM-->
+  <form id="login-form" style="display: none;">
+    <div class="form-elements-container">
+      <label for="input-email"><b>Email</b></label>
+      <input type="text" placeholder="Enter Username" id="input-email" required>
+
+      <label for="input-password"><b>Password</b></label>
+      <input type="password" placeholder="Enter Password" id="input-password" required>
+
+      <button type="submit" id="login-button">Login</button>
+      <p id="error-message" style="color:red;"></p>
+    </div>
+  </form>
+
+  <!--CONTENT (SENSOR READINGS)-->
+  <div class="content-sign-in" id="content-sign-in">
+  <div class="cards"; style="color:rgb(255, 252, 251);">
+    <div>
+      <h2 style="background-color:#e90303;">Environment Sensor</h2>
+    </div>
+  </div>
+  <div class="content-sign-in" id="content-sign-in">
+    <div class="cards">
+      <!--TEMPERATURE-->
+      <div class="card">
+        <p><i class="fas fa-thermometer-half" style="color:#e72b3b;"></i>Temperature</p>
+        <p><span class="reading"><span id="temp"></span> &deg;C</span></p>
+      </div>
+      <!--HUMIDITY-->
+      <div class="card">
+        <p><i class="fas fa-tint" style="color:#00add6;"></i>Humidity</p>
+        <p><span class="reading"><span id="humudara"></span> &percnt;</span></p>
+      </div>
+      <!--LUX-->
+      <div class="card">
+        <p><i class="fas fa-lightbulb" style="color:#eaaa08;"></i>Light Intensity</p>
+        <p><span class="reading"><span id="lux"></span> Lux</span></p>
+      </div>
+    </div>
+  <div class="content-sign-in" id="content-sign-in">
+    <div class="cards"; style="color:rgb(255, 252, 251);">
+      <div>
+        <h2 style="background-color:#e90303;">Soil Sensor</h2>
+      </div>
+    </div>
+    <div class="cards">
+      <div class="card">
+        <p><i class="fas fa-tint" style="color:#00add6;"></i>Soil Moisture Sensor 1</p>
+        <p><span class="reading"><span id="humtanah1"></span> &percnt;</span></p>
+      </div>
+      <div class="card">
+        <p><i class="fas fa-tint" style="color:#00add6;"></i>Soil Moisture Sensor 2</p>
+        <p><span class="reading"><span id="humtanah2"></span> &percnt;</span></p>
+      </div>
+    </div>
+  <!--Tombol-->
+  <div class="content-sign-in" id="content-sign-in">
+    <div class="cards"; style="color:rgb(255, 252, 251);">
+      <div>
+        <h2 style="background-color:#e90303;">Controlling</h2>
+      </div>
+    </div>
+    <div class="cards">
+        <!--Ml-->
+        <div class="card card-switch\">
+          <h4><i class="fas fa-lightbulb\"></i>Auto</h4><label class="switch"><input type="checkbox" onchange="toggleLed(this);" id="ml"><span class="slider"></span></label>
+        </div>
+        <!--Manual-->
+        <div class="card card-switch\">
+          <h4><i class="fas fa-lightbulb\"></i>Manual</h4><label class="switch"><input type="checkbox" onchange="toggleMan(this);" id="manual"><span class="slider"></span></label>
+        </div>
+    </div>
+     
+  <!--CHARTS-->
+  <!--  <div id="charts-div" style="display:none"> -->
+    <div id="charts-div" >
+      <!--SET NUMBER OF READINGS INPUT FIELD-->
+      <div class="cards"; style="color:rgb(255, 252, 251);">
+        <div>
+          <h2 style="background-color:#e90303;">Environment Sensor Graph</h2>
+        </div>
+      </div>
+      <!--TEMPERATURE-CHART-->
+      <div class="cards">
+        <div class="card">
+          <p><i class="fas fa-thermometer-half" style="color:#e50606;"></i>Temperature Chart</p>
+          <div id="chart-temperature" class="chart-container"></div>
+        </div>
+      </div>
+      <!--HUMIDITY-CHART-->
+      <div class="cards">
+        <div class="card">
+          <p><i class="fas fa-tint" style="color:#00add6;"></i>Humidity Chart</p>
+          <div id="chart-humidity" class="chart-container"></div>
+        </div>
+      </div>
+      <!--LUX-CHART-->
+      <div class="cards">
+        <div class="card">
+          <p><i class="fas fa-lightbulb" style="color:#eaaa08;"></i>Light Intensity Chart</p>
+          <div id="chart-lux" class="chart-container"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--CHARTS-->
+  <!--  <div id="charts-div" style="display:none"> -->
+    <div id="charts-div" >
+      <!--SET NUMBER OF READINGS INPUT FIELD-->
+      <div class="cards"; style="color:rgb(255, 252, 251);">
+        <div>
+          <h2 style="background-color:#e90303;">Soil Moisture Sensor Graph</h2>
+        </div>
+      </div>
+      <!--Soil Moisture Sensor 1-->
+      <div class="cards">
+        <div class="card">
+          <p><i class="fas fa-tint" style="color:#00add6;"></i>Soil Moisture Sensor 1</p>
+          <div id="chart-SM1" class="chart-container"></div>
+        </div>
+      </div>
+      <!--Soil Moisture Sensor 2-->
+      <div class="cards">
+        <div class="card">
+          <p><i class="fas fa-tint" style="color:#00add6;"></i>Soil Moisture Sensor 2</p>
+          <div id="chart-SM2" class="chart-container"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="scripts/index.js"></script>
+  <script src="scripts/auth.js"></script>
+  <script src="scripts/charts-definitions.js"></script>
+  </body>
+</html>
