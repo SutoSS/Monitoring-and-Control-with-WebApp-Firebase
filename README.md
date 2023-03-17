@@ -11,3 +11,6 @@ Graph and Switch Button
 
 Graph
 ![Capture3](https://user-images.githubusercontent.com/67867879/225886886-b3064ca0-dc25-4fa4-a393-159286383607.JPG)
+
+Database Firebase
+![Capture5](https://user-images.githubusercontent.com/67867879/225930691-671834c1-bdc6-4950-8a05-839758e5ca8f.JPG)
